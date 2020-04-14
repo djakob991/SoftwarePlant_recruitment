@@ -1,0 +1,42 @@
+
+<div class="d-flex mb-5">
+  <input #searchField class="form-control form-control-lg mr-1" type="text" placeholder="Type planet name here">
+  <button type="button" class="btn btn-success btn-lg" (click)="search(searchField)">Search</button>
+</div>
+
+<ng-container [ngSwitch]="componentState">
+  
+  <div *ngSwitchCase="'initialLoading'">
+    <h2>Loading... Please wait</h2>
+  </div>
+
+  <div *ngSwitchCase="'error'">
+    <h2 class="text-danger">An error occured. Sorry</h2>
+  </div>
+
+  <div *ngSwitchCase="'ready'">
+    <h3> {{title}} </h3>
+    <hr>
+
+    <!-- Listing planets -->
+    <app-planet-card *ngFor="let planet of this.planetList" [planet]="planet" (click)="goToDetailsPage(planet)">
+    </app-planet-card>
+
+    <!-- Pagination -->
+    <ul class="pagination justify-content-center" [hidden]="state.count === 0">
+      <li class="page-item"><button class="page-link" (click)="newPage(1)">First</button></li>
+  
+      <li *ngFor="let i of pagesInterval" class="page-item" [ngClass]="{'active': i === state.page}">
+        <button class="page-link" (click)="newPage(i)">
+          {{i}}
+        </button>
+      </li>
+  
+      <li class="page-item"><button class="page-link" (click)="newPage(pagesCount)">Last</button></li>
+    </ul>
+  </div>
+
+</ng-container>
+
+
+

@@ -1,0 +1,69 @@
+<ng-container [ngSwitch]="componentState">
+
+  <div *ngSwitchCase="'loading'">
+    <h2>Loading... Please wait</h2>
+  </div>
+
+  <div *ngSwitchCase="'error'">
+    <h2 class="text-danger">An error occured. Sorry</h2>
+  </div>
+
+  <div *ngSwitchCase="'ready'">
+
+    <h2>{{planet.name}}</h2>
+    <button type="button" class="btn btn-primary float-right" routerLink="/results">Go back</button>
+    <hr>
+
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <td>Name</td>
+          <td>{{planet.name}}</td>
+        </tr>
+
+        <tr>
+          <td>Rotation Period</td>
+          <td>{{planet.rotation_period}}</td>
+        </tr>
+        <tr>
+
+          <td>Orbital Period</td>
+          <td>{{planet.orbital_period}}</td>
+        </tr>
+
+        <tr>
+          <td>Diameter</td>
+          <td>{{planet.diameter}}</td>
+        </tr>
+
+        <tr>
+          <td>Climate</td>
+          <td>{{planet.climate}}</td>
+        </tr>
+
+        <tr>
+          <td>Gravity</td>
+          <td>{{planet.gravity}}</td>
+        </tr>
+
+        <tr>
+          <td>Terrain</td>
+          <td>{{planet.terrain}}</td>
+        </tr>
+
+        <tr>
+          <td>Surface Water</td>
+          <td>{{planet.surface_water}}</td>
+        </tr>
+
+        <tr>
+          <td>Population</td>
+          <td>{{planet.population}}</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+
+</ng-container>

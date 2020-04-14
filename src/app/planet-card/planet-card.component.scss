@@ -1,0 +1,12 @@
+.planet-card {
+  height: 100px;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  transition: transform .2s;
+  cursor: pointer;
+}
+
+.planet-card:hover {
+  transform: scale(1.1);
+}

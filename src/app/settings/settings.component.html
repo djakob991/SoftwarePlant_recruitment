@@ -1,0 +1,13 @@
+<h3>Settings</h3>
+<button type="button" class="btn btn-primary float-right" (click)="save()">Save changes</button>
+<hr>
+
+
+<label for="sel1">Planets per page:</label>
+<select #pageSizeSelect class="form-control" id="sel1">
+  
+  <option *ngFor="let size of availablePageSizes" [selected]="size == state.pageSize">
+    {{size}}
+  </option>
+
+</select>
