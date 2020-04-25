@@ -53,7 +53,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
    * Initiates the page size change - calls an adequate method of planetsStoreService.
    */
   changePageSize(pageSize: number) {
-    this.planetsStoreService.changePageSize(pageSize, this.state);
+    this.planetsStoreService.update(this.state.changePageSizeAction(pageSize));
   }
 
 

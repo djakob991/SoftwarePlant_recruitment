@@ -1,5 +1,5 @@
 /**
- * Service that takes care of making http requests.
+ * Service that is responsible for making http requests and caching.
  */
 
 import { Injectable } from '@angular/core';
@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { PlanetsPortion } from './models/PlanetsPortion';
 import { Observable, empty } from 'rxjs';
 import { Planet } from './models/Planet';
-import { shareReplay, catchError } from 'rxjs/operators';
+import { shareReplay, catchError, last } from 'rxjs/operators';
 
 
 @Injectable({
@@ -17,32 +17,49 @@ export class PlanetsService {
 
   baseUrl = 'http://0.0.0.0:8080/api/planets/';
 
-  /**
-   * Here will be stored the observables of single planets.
-   */
-  planetsCache = {};
+  lastSearched: string = '';
+
+  //The observables of server-size portions of the planets will be stored here.
+  planetsPortionsCache: { [page: number]: Observable<PlanetsPortion> } = {};
+
+  //The observables of single planets will be stored here.
+  planetsCache: { [id: string]: Observable<Planet> } = {};
+
 
   constructor(private http: HttpClient) { }
 
 
   /**
-   * Returns the observable of a particular server-side page of planets.
-   * Such page contains max 10 planets, and I call it a 'portion'. It is not
-   * cached - PlanetsStoreService takes care of memoizing once retrieved
-   * portions.
+   * Returns an observable of a particular server-size page of planets. Doesn't
+   * make a request, if the portion is already in cache.
+   * Cache is cleared every time when a new term is searched.
    */
   getPlanetsPortion(page: number, search: string): Observable<PlanetsPortion> {
+    if (search != this.lastSearched) {
+      this.planetsPortionsCache = {};
+      this.lastSearched = search;
+    }
+
     let url = this.baseUrl + '?page=' + page + '&search=' + search;
-    return this.http.get<PlanetsPortion>(url);
+    
+    if (this.planetsPortionsCache[page]) {
+      return this.planetsPortionsCache[page];
+    }
+
+    this.planetsPortionsCache[page] = this.http.get<PlanetsPortion>(url).pipe(
+      shareReplay(1),
+      catchError(err => {
+        delete this.planetsPortionsCache[page];
+        throw 'Request failed';
+      })
+    );
+
+    return this.planetsPortionsCache[page];
   }
 
 
   /**
-   * Returns the observable of a particular planet. This time, it is cached
-   * here - once created observable is stored in 'planetsCache'. Next time
-   * when a call is made with the same id, an observable will be taken from
-   * there. Thank to shareReplay, the value from the observable can be retrieved
-   * many times.
+   * Returns an observable of a particular planet (also cached).
    */
   getPlanet(id: string) {
     let url = this.baseUrl + id;

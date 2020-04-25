@@ -47,7 +47,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
       }
 
       this.componentState = 'ready';
-      this.planetList = state.planetList();
+      this.planetList = state.displayList;
       this.pagesCount = state.pagesCount();
       
       this.updateTitle();
@@ -94,7 +94,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
   search(searchField: HTMLInputElement) {
     let value = searchField.value;
     searchField.value = '';
-    this.planetsStoreService.search(value, this.state);
+    
+    this.planetsStoreService.update(this.state.searchAction(value));
   }
 
 
@@ -102,7 +103,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
    * Initiates a page change.
    */
   newPage(page: number) {
-    this.planetsStoreService.newPage(page, this.state);
+    this.planetsStoreService.update(this.state.newPageAction(page));
   }
 
 
